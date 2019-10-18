@@ -1,0 +1,97 @@
+/**
+ 引用步骤：
+ (1) 在 project 下的 build.gradle 文件第一行添加 apply from : "config.gradle"
+ (2) 在各个 module 中用 implemetions rootProject.ext.dependencies['xxx'] 和 annotationProcessor rootProject.ext..dependencies['xxx']
+ **/
+ext {
+    android = [
+            applicationId    : 'com.aite.moheadlinemerchant',
+            compileSdkVersion: 29,
+            buildToolsVersion: "29.0.2",
+            minSdkVersion    : 16,
+            targetSdkVersion : 29,
+            versionCode      : 1,
+            versionName      : "1.0",
+            renderscriptTargetApi   : 21
+
+    ]
+
+    version = [
+            supportLibraryVersion   : '1.1.0-rc01',
+            smartrefreshVersion     : "1.1.0-alpha-21",
+            okhttpVersion           : '4.0.1',
+            retrofitVersion         : '2.6.1',
+            glideVersion            : "4.9.0",
+            arouterVersion          : "2.15",
+            butterknifeVersion      : '10.1.0',
+            designVersion           : "1.1.0-alpha10",
+            cardviewVersion         : "1.0.0",
+            constraintlayoutVersion : "2.0.0-beta2",
+            recyclerviewVersion     : "1.1.0-beta02",
+            lottieVersion           : "3.0.7",
+            pictureSelectVersion    : "v2.2.3",
+    ]
+
+    dependencies = [
+            // support
+            "design"                 : "com.google.android.material:material:${version["designVersion"]}",
+            "cardview-v7"            : "androidx.cardview:cardview:${version["cardviewVersion"]}",
+            "appcompat-v7"           : "androidx.appcompat:appcompat:${version["supportLibraryVersion"]}",
+            "constraint-layout"      : "androidx.constraintlayout:constraintlayout:${version["constraintlayoutVersion"]}",
+
+            // ui
+            "annotations"            : "androidx.annotation:annotation:${version["supportLibraryVersion"]}",
+            "recyclerview-v7"        : "androidx.recyclerview:recyclerview:${version["recyclerviewVersion"]}",
+            "banner"                 : "com.youth.banner:banner:1.4.10",
+            "smart-refreshlayout"    : "com.scwang.smartrefresh:SmartRefreshLayout:${version["smartrefreshVersion"]}",
+            "photoview"              : "com.github.chrisbanes:PhotoView:2.0.0",
+            "roundview"              : "com.github.SheHuan:NiceImageView:1.0.5",
+            "recycler-adapter-helper": "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30",
+            "image-pickview"         : "com.github.LuckSiege.PictureSelector:picture_library:${version["pictureSelectVersion"]}",
+            "backlayout"             : "cn.bingoogolapple:bga-swipebacklayout:1.2.0@aar",
+            "lottie"                 : "com.airbnb.android:lottie:${version["lottieVersion"]}",
+            "textbannerview"         : "com.superluo:textbannerview:1.0.5",
+            "bridge"                 : "com.github.open-android:BridgeWebView:v1.0",
+            "chart"                  : "com.github.PhilJay:MPAndroidChart:v3.1.0",
+
+            "gson"                   : "com.google.code.gson:gson:2.8.2",
+            "okhttp"                 : "com.squareup.okhttp3:okhttp:${version["okhttpVersion"]}",
+            "retrofit"               : "com.squareup.retrofit2:retrofit:${version["retrofitVersion"]}",
+            "adapter-rxjava"         : "com.squareup.retrofit2:adapter-rxjava2:${version["retrofitVersion"]}",
+            "converter-gson"         : "com.squareup.retrofit2:converter-gson:${version["retrofitVersion"]}",
+            "retrofit-cookie"        : "com.github.franmontiel:PersistentCookieJar:v1.0.1",
+            "glide"                  : "com.github.bumptech.glide:glide:${version["glideVersion"]}",
+            "glide-compiler"         : "com.github.bumptech.glide:compiler:${version["glideVersion"]}",
+            "logging-interceptor"    : "com.squareup.okhttp3:logging-interceptor:${version["okhttpVersion"]}",
+
+            "rxandroid"              : "io.reactivex.rxjava2:rxandroid:2.1.0",
+            "rxjava"                 : "io.reactivex.rxjava2:rxjava:2.2.4",
+            "rxbinding"              : "com.jakewharton.rxbinding2:rxbinding:2.1.0",
+            "rxpermissions"          : "com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar",
+
+            "butterknife"            : "com.jakewharton:butterknife:${version["butterknifeVersion"]}",
+            "butterknife-compiler"   : "com.jakewharton:butterknife-compiler:${version["butterknifeVersion"]}",
+            "greendao"               : "org.greenrobot:greendao:3.2.2",
+
+            "arouter-api"            : "com.alibaba:arouter-api:1.4.1",
+            "arouter-compiler"       : "com.alibaba:arouter-compiler:1.2.2",
+
+            "logger"                 : "com.orhanobut:logger:2.1.1",
+            "ByeBurger"              : "com.github.githubwing:ByeBurger:1.2.3",
+            "XUpdate"                : "com.github.xuexiangjys:XUpdate:1.0.6",
+            "qrCode"                 : "cn.yipianfengye.android:zxing-library:2.2",
+
+            //AILI YUN
+            "aliyunOSS"             : "com.aliyun.dpa:oss-android-sdk:+",
+            "alivc-conan"           : "com.alivc.conan:AlivcConan:0.9.5.1",
+            "alivc-core"            : "com.aliyun.video.android:core:1.2.1",
+
+            //test
+            "junit"                  : "junit:junit:4.12",
+            "runner"                 : "androidx.test:runner:1.2.0",
+            "espresso-core"          : "androidx.test.espresso:espresso-core:3.2.0",
+            "umen_commen"            : "com.umeng.umsdk:common:1.5.4",
+            "umen_utidi"             : "com.umeng.umsdk:utdid:1.1.5.3",
+            "font-size"              : "com.ljx.view:fontresize:1.0.1"
+    ]
+}

@@ -1,0 +1,63 @@
+<resources>
+    <string name="search">搜索</string>
+        
+    <string name="about">關於</string>
+        
+    <string name="setting">設置</string>
+        
+    <string name="reload">重新加載</string>
+        
+    <string name="permission_error_location">應用內需要使用的定位權限，請確認開啟!</string>
+        
+    <string name="left">還剩</string>
+        
+    <string name="hour">小時</string>
+        
+    <string name="minute">分</string>
+        
+    <string name="seconds">秒</string>
+        
+    <string name="day">天</string>
+        
+    <string name="time_format">%s月%s日 %s</string>
+        
+    <string name="front_second">秒前</string>
+        
+    <string name="front_minute">分鐘前</string>
+        
+    <string name="front_hour">小時前</string>
+        
+    <string name="front_day">天前</string>
+        
+    <string name="format_day_year">yyyy年MM月dd日</string>
+        
+    <string name="format_day_month">MM月dd日</string>
+        
+    <string name="format_time_month">MM月dd日 HH:mm</string>
+        
+    <string name="title">請選擇時間</string>
+        
+    <string name="year">年</string>
+        
+    <string name="month">月</string>
+        
+    <string name="select_date">選擇日期</string>
+        
+    <string name="current_date">當前日期</string>
+        
+    <string name="select_time">選擇時間</string>
+        
+    <string name="current_time">當前時間</string>
+
+    <string name="base_tips_title">温馨提示</string>
+
+    <string name="base_please_input">請輸入</string>
+
+    <string name="cancel">取消</string>
+        
+    <string name="confirm">確定</string>
+
+    <string name="symbol">￥</string>
+
+    <string name="save">保存</string>
+</resources>

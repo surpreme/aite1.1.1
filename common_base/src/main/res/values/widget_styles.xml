@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ToolbarText" parent="TextAppearance.AppCompat.Small">
+
+        <item name="android:textColor">@android:color/transparent</item>
+
+    </style>
+
+    <!--    app:tabIndicatorFullWidth="false" // tab bu zhan man
+            app:tabGravity="center"
+            app:tabMaxWidth="300dp"
+            app:tabMinWidth="20dp"
+            app:tabPaddingEnd="2dp"
+            app:tabPaddingStart="2dp"-->
+
+    <style name="MyTabLayoutStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="android:height">45dp</item>
+        <item name="tabBackground">@color/primary_background_color</item>
+        <item name="tabIndicatorColor">@color/tab_indicator_color</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabSelectedTextColor">@color/tab_indicator_color</item>
+        <item name="tabTextAppearance">@style/TextAppearance.AppCompat.Menu</item>
+    </style>
+
+    <style name="MyTextInputLayoutStyle" parent="Widget.Design.TextInputLayout">
+        <!--输入字符长度提示文字样式-->
+        <item name="counterTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <!--输入字符长度提示文字超出后样式-->
+        <item name="counterOverflowTextAppearance">@style/EditTextErrorTextAppearance</item>
+        <!--输入提示语文字样式-->
+        <item name="hintTextAppearance">@style/SmallLightTextAppearance</item>
+        <!--错误提示文字样式-->
+        <item name="errorTextAppearance">@style/EditTextErrorTextAppearance</item>
+        <!--边框样式-->
+        <item name="boxBackgroundMode">outline</item>
+        <!--边框描边颜色-->
+        <item name="boxStrokeColor">@color/divider_general_deep</item>
+        <!--密码输入小眼睛颜色-->
+        <item name="passwordToggleTint">@color/text_general_color_dark</item>
+        <!--错误提示颜色-->
+        <item name="endIconTint">@color/text_general_color_dark</item>
+    </style>
+
+    <style name="EditTextErrorTextAppearance" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/text_general_color_error</item>
+    </style>
+
+    <style name="MenuTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/text_general_color_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SmallLightTextAppearance" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/text_general_color_light</item>
+    </style>
+
+    <style name="GeneralLightTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/text_general_color_light</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Caption.Inverse" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/text_general_color_inverse</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Menu.Inverse" parent="TextAppearance.AppCompat.Menu">
+        <item name="android:textColor">@color/text_general_color_inverse</item>
+    </style>
+
+    <style name="ButtonTextAppearance" parent="TextAppearance.AppCompat.Menu">
+        <item name="android:textColor">@color/button_enable_select</item>
+    </style>
+
+    <style name="ButtonTextAppearance.Dark" parent="TextAppearance.AppCompat.Menu">
+        <item name="android:textColor">@color/button_enable_select_dark</item>
+    </style>
+
+    <style name="CustomActionButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_default_material</item>
+        <item name="android:textAppearance">@style/ButtonTextAppearance</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="CustomRectangleActionButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_rectangle_material</item>
+        <item name="android:textAppearance">@style/ButtonTextAppearance</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="Widget.MaterialComponents.Button.OutlinedButton.Me">
+        <item name="android:textColor">@color/base_mtrl_btn_text_color_selector</item>
+        <item name="backgroundTint">@color/base_mtrl_btn_text_btn_bg_color_select</item>
+        <item name="strokeColor">@color/base_mtrl_btn_stroke_color_select</item>
+    </style>
+
+</resources>

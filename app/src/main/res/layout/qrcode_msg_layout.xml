@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="220dp"
+        android:layout_height="190dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提示"
+                android:textColor="#ff333333"
+                android:textSize="18sp"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
+                />
+            <TextView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="此订单已被Synon操作入库！"
+                android:textColor="#ff333333"
+                android:textSize="15sp"
+                android:layout_centerInParent="true"
+                />
+
+            <ImageView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="40dp"
+                android:src="@mipmap/qrcode_success" />
+            <TextView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="包裹已成功入库！"
+                android:textColor="#ff666666"
+                android:textSize="14sp" />
+
+            <TextView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="操作失败！"
+                android:textColor="#ff666666"
+                android:textSize="14sp"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="125dp"
+                />
+            <Button
+                android:layout_width="142dp"
+                android:layout_height="wrap_content"
+                android:text="确定"
+                android:textColor="#ffffffff"
+                android:textSize="18sp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:background="@drawable/round_background_yellow"
+                />
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:paddingLeft="10dp"
+                android:textColor="#ff333333"
+                android:textSize="18sp"
+                android:layout_centerInParent="true"
+                android:inputType="number" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#ffff</color>
+    <color name="colorPrimaryDark">#ffff</color>
+    <color name="colorAccent">#ff616161</color>
+    <color name="colorPrimaryPressed">#ffff</color>
+
+    <!--项目中使用到的主色-->
+    <!--字体颜色-->
+    <color name="text_general_color_dark">#414141</color>
+    <color name="text_general_color_light">#F5663D</color>
+    <color name="text_general_color_deep">#333333</color>
+    <color name="text_general_color_shallow">#ADADAD</color>
+    <color name="text_general_color_inverse">#FFFFFF</color>
+    <color name="text_general_color_error">#E53935</color>
+    <color name="text_general_dialog_edit">#DEC1C7</color>
+
+    <!--锋哥线颜色 divider-->
+    <color name="divider_general_deep">#241333</color>
+    <color name="divider_general_shallow">#EEEEEE</color>
+    <color name="divider_general_light">#FFDB30</color>
+    <color name="tab_indicator_color">#f75000</color>
+
+    <!--按键效果颜色-->
+    <color name="button_light_press_start">#FEBD03</color>
+    <color name="button_light_press_end">#3EFEBD03</color>
+    <color name="button_enable_color">#FEBD03</color>
+    <color name="button_un_enable_color">#E6E6E6</color>
+    <color name="normal_ripple_color">#99999999</color>
+    <!--背景颜色-->
+    <color name="primary_background_color">#FFFFFF</color>
+    <color name="primary_background_shallow_color">#F2F6FA</color>
+    <color name="primary_background_deep_color">#99999999</color>
+    <color name="primary_background_light_color">#F5663D</color>
+    <color name="primary_background_translate">#33000000</color>
+    <color name="primary_background_translate_inverse">#B2FFFFFF</color>
+    <color name="primary_background_dark_color">#000000</color>
+    <color name="primary_background_dialog_fragment">#712427</color>
+
+    <color name="review_second_user_color">#3871FF</color>
+    <color name="special_level_color">#D53839</color>
+
+</resources>

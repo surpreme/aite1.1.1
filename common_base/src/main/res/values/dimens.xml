@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="statusbar_view_height">0dp</dimen>
+
+    <!--APP 内字体统一-->
+    <dimen name="primary_text_size_big">27sp</dimen>
+    <dimen name="primary_text_size_middle">18sp</dimen>
+    <dimen name="primary_text_size_general">16sp</dimen>
+    <dimen name="primary_text_size_small">12sp</dimen>
+    <dimen name="primary_text_size_minimum">10sp</dimen>
+
+    <!--App 内行间距-->
+    <dimen name="primary_row_spacing_big">30dp</dimen>
+    <dimen name="primary_row_spacing_middle">15dp</dimen>
+    <dimen name="primary_row_spacing_general">10dp</dimen>
+    <dimen name="primary_row_spacing_small">8dp</dimen>
+    <dimen name="primary_row_spacing_minimum">5dp</dimen>
+
+    <dimen name="picker_view_height">160dp</dimen>
+    <dimen name="date_unit_text_size">18sp</dimen>
+
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BadgeRadioButton">
+        <attr name="badge_TextColor" format="color|reference" />
+        <attr name="badgeTextSize" format="dimension|reference" />
+        <attr name="badgeBackground" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ZoomScrollView">
+        <attr name="zoomTarget" format="integer|reference" />
+        <attr name="zoomMax" format="dimension|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="horizontalMargin" format="dimension|reference" />
+        <attr name="verticalMargin" format="dimension|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="IndicatorView">
+        <attr name="radius" format="dimension" />
+        <attr name="distance" format="dimension" />
+        <attr name="normalColor" format="color" />
+        <attr name="selectedColor" format="color" />
+    </declare-styleable>
+    <declare-styleable name="PxBlurringView">
+        <!--0 < radius <= 25-->
+        <attr name="blurRadius" format="integer" />
+        <attr name="downsampleFactor" format="integer" />
+        <!--模糊的颜色 默认50%白色-->
+        <attr name="overlayColor" format="color" />
+    </declare-styleable>
+
+</resources>
