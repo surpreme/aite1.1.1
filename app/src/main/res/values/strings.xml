@@ -61,6 +61,8 @@
 
 
     <string name="shopitem_number">包裹号 : %s</string>
+    <string name="bigitem_number">大包裹号 : %s</string>
+
     <string name="shopitem_go_timer">入库时间 : %s</string>
     <string name="shopitem_out_timer">出库时间 : %s</string>
 
@@ -69,7 +71,7 @@
     <string name="no">取消</string>
     <string name="ok">确定</string>
     <string name="gohouseworker">入库员</string>
-    <string name="outhouseworker">出货员</string>
+    <string name="outhouseworker">出库员</string>
     <string name="changekeybartxt">修改密码</string>
     <string name="findkeytxtbar">找回密码</string>
     <string name="fixkeyfisthint">新密码，6到12位数字与字母</string>
@@ -106,6 +108,7 @@
     <string name="send">发送</string>
     <string name="login">登录</string>
     <string name="jump">跳过</string>
-
+    <string name="overouthome">已出库</string>
+    <string name="overgohome">已入库</string>
 
 </resources>

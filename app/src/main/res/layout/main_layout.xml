@@ -273,6 +273,7 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/workerfix_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
@@ -303,6 +304,7 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/thingsbook_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"

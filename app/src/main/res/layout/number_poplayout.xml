@@ -6,8 +6,8 @@
 
     <TextView
         android:id="@+id/phone_header_txt"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:background="@drawable/round_background_white"

@@ -39,11 +39,13 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/choice_timer_son"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -109,9 +111,10 @@
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.1dp"
         android:background="@color/glay"/>
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/date_choice_center"
         android:layout_width="match_parent"
         android:layout_height="26dp"
@@ -151,9 +154,10 @@
 </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.2dp"
         android:background="@color/glay"/>
     <com.google.android.material.tabs.TabLayout
+        android:visibility="gone"
         android:id="@+id/thingsfix_tabMode"
         android:layout_gravity="center"
         android:layout_width="match_parent"
@@ -176,9 +180,22 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
+        android:visibility="gone"
         android:id="@+id/thingfix_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+
+    </androidx.viewpager.widget.ViewPager>
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/things_fix_recy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
 </LinearLayout>
