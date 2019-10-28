@@ -15,7 +15,7 @@
         android:layout_height="56dp">
 
         <ImageView
-            android:id="@+id/iv_back_workerfix"
+            android:id="@+id/iv_back"
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
@@ -29,6 +29,8 @@
             android:text="员工管理"
             android:textColor="#ffff8244"
             android:textSize="18sp" />
+
+
     </RelativeLayout>
 
     <View
@@ -56,6 +58,7 @@
             android:textSize="17sp" />
 
         <TextView
+            android:id="@+id/user_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -114,6 +117,7 @@
         android:background="@color/glay" />
     </LinearLayout>
     <Button
+        android:id="@+id/changekey_btn"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -24,19 +24,47 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.base.Request;
+import com.scwang.smartrefresh.header.WaterDropHeader;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 
 public class OutHouseFragment extends BaseFragment {
     private ThingbookAdapter recyAdapter;
-    RecyclerView thingbook_out_recy;
+    private RecyclerView thingbook_out_recy;
+    private SmartRefreshLayout smartRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.outhouse_layout,container,false);
-        thingbook_out_recy=view.findViewById(R.id.thingbook_out_recy);
+        init(view);
         getDatas();
         return view;
+    }
+
+    private void init(View view) {
+        thingbook_out_recy=view.findViewById(R.id.thingbook_out_recy);
+        smartRefreshLayout=view.findViewById(R.id.refreshLayout);
+        //下拉刷新
+        smartRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
+        smartRefreshLayout.setRefreshHeader(new WaterDropHeader(getContext()));
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                getDatas();
+                refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
+            }
+        });
+        smartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                refreshlayout.finishLoadMore(1000/*,false*/);//传入false表示加载失败
+            }
+        });
     }
 
     private void getDatas() {
@@ -60,7 +88,7 @@ public class OutHouseFragment extends BaseFragment {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                recyAdapter = new ThingbookAdapter(getActivity(), thingbookbean.getList());
+                                recyAdapter = new ThingbookAdapter(getActivity(), thingbookbean.getList(),null);
                                 thingbook_out_recy.setAdapter(recyAdapter);
                                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                                 thingbook_out_recy.setLayoutManager(linearLayoutManager);

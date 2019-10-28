@@ -1,5 +1,6 @@
 package com.example.jianancangku.utils;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.Context;
 
@@ -19,6 +20,18 @@ public class TimeUtils {
 //    int year= Integer.parseInt(getCurrentYY());
 //    int month= Integer.parseInt(getCurrentMM());
 //    int day= Integer.parseInt(getCurrentDD());
+
+
+
+    //毫秒 获取当前时间0点
+    public static long getTime000(long time) {
+        return time / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();
+    }
+    //秒 获取当前时间0点
+    @SuppressLint("DefaultLocale")
+    public static long getTime(long time) {
+        return getTime000(time)/1000;
+    }
     public static String getCurrentHHSS() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");// HH:mm:ss
         Date date = new Date(System.currentTimeMillis());

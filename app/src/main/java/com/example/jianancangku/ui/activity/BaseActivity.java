@@ -3,7 +3,9 @@ package com.example.jianancangku.ui.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,18 +21,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.jianancangku.args.Constant;
+import com.example.jianancangku.utils.NetworkUtils;
+import com.example.jianancangku.utils.SharePreferencesHelper;
+import com.example.jianancangku.utils.StatusBarUtils;
+import com.example.jianancangku.utils.ToastUtils;
+
 import java.util.Arrays;
 
-import butterknife.ButterKnife;
-
-public abstract class BaseActivity extends AppCompatActivity implements View.OnTouchListener, ActivityCompat.OnRequestPermissionsResultCallback{
+public abstract class BaseActivity extends AppCompatActivity implements
+        View.OnTouchListener,
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        View.OnClickListener {
     private static final int XSPEED_MIN = 700;
     private static final int XDISTANCE_MIN = 460;
     private float xDown;
     private float xMove;
     protected Context context;
     private VelocityTracker mVelocityTracker;
-    //定义所需数据为权限别名
+
     public static final String PERMISSION_RECORD_AUDIO = android.Manifest.permission.RECORD_AUDIO;
     public static final String PERMISSION_GET_ACCOUNTS = android.Manifest.permission.GET_ACCOUNTS;
     public static final String PERMISSION_READ_PHONE_STATE = android.Manifest.permission.READ_PHONE_STATE;
@@ -41,33 +50,52 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnT
     public static final String PERMISSION_READ_EXTERNAL_STORAGE = android.Manifest.permission.READ_EXTERNAL_STORAGE;
     public static final String PERMISSION_WRITE_EXTERNAL_STORAGE = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private static final String[] requestPermissions = {
-            PERMISSION_RECORD_AUDIO,PERMISSION_GET_ACCOUNTS,
-            PERMISSION_READ_PHONE_STATE,PERMISSION_CALL_PHONE,
-            PERMISSION_CAMERA,PERMISSION_ACCESS_FINE_LOCATION,
-            PERMISSION_COARSE_LOCATION,PERMISSION_READ_EXTERNAL_STORAGE,
+            PERMISSION_RECORD_AUDIO, PERMISSION_GET_ACCOUNTS,
+            PERMISSION_READ_PHONE_STATE, PERMISSION_CALL_PHONE,
+            PERMISSION_CAMERA, PERMISSION_ACCESS_FINE_LOCATION,
+            PERMISSION_COARSE_LOCATION, PERMISSION_READ_EXTERNAL_STORAGE,
             PERMISSION_WRITE_EXTERNAL_STORAGE,};
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(getLayoutResId());
         context = this;
+        StatusBarUtils.setColor(context, Color.WHITE);
+
+    }
+
+    /**
+     * 跳转页面
+     *
+     * @param clz 所跳转的目的Activity类
+     */
+    public void startActivity(Class<?> clz) {
+        startActivity(new Intent(this, clz));
+    }
+
+    /**
+     * 跳转页面
+     *
+     * @param clz    所跳转的目的Activity类
+     * @param bundle 跳转所携带的信息
+     */
+    public void startActivity(Class<?> clz, Bundle bundle) {
+        Intent intent = new Intent(this, clz);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
     }
 
 
-//    protected abstract int getLayoutResId();
-
-    public void applypermission(){
-        //requestPermissions可以改成string 有2种方式 string 和string[]
-        if(Build.VERSION.SDK_INT>=23){
-            //检查是否已经给了权限
-            int checkpermission= ContextCompat.checkSelfPermission(getApplicationContext(),
+    public void applypermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int checkpermission = ContextCompat.checkSelfPermission(getApplicationContext(),
                     Arrays.toString(requestPermissions));
-            if(checkpermission!= PackageManager.PERMISSION_GRANTED){//没有给权限
-                Log.e("permission","动态申请");
-                //参数分别是当前活动，权限字符串数组，requestcode
-                ActivityCompat.requestPermissions((Activity) context,requestPermissions, 1);
+            if (checkpermission != PackageManager.PERMISSION_GRANTED) {//没有给权限
+                Log.e("permission", "动态申请");
+                ActivityCompat.requestPermissions((Activity) context, requestPermissions, 1);
             }
         }
     }
@@ -75,17 +103,25 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnT
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //grantResults数组与权限字符串数组对应，里面存放权限申请结果
-        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //            Toast.makeText(context,"已授权",Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
 //            Toast.makeText(context,"拒绝授权",Toast.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!NetworkUtils.isNetworkAvailable(context))
+            ToastUtils.showToast(context, "请检查网络");
+        if (!Constant.isLogin) {
+            if (!(context instanceof LogInActivity) && !(context instanceof FindMsgActivity)) {
+                finish();
+                startActivity(new Intent(context, LogInActivity.class));
+            }
+        }
 
-    void dismissPopWindow(PopupWindow popupWindow){
-        if (popupWindow!=null)popupWindow.dismiss();
     }
 
     void setBackGroundAlpha(float alpha, Context context) {
@@ -94,37 +130,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnT
         layoutParams.alpha = alpha;
         ((AppCompatActivity) context).getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         ((AppCompatActivity) context).getWindow().setAttributes(layoutParams);
-    }
-    private void setWithoutBar(Window window){
-        View decorView = window.getDecorView();
-        @SuppressLint("InlinedApi") int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().hide();
-    }
-    public void setWithoutBar(Context context) {
-        if (context instanceof Activity)
-            setWithoutBar(((Activity) context).getWindow());
-    }
-    public void listenBar(){
-        View decorView = getWindow().getDecorView();
-        decorView.setOnSystemUiVisibilityChangeListener
-                (new View.OnSystemUiVisibilityChangeListener() {
-                    @Override
-                    public void onSystemUiVisibilityChange(int visibility) {
-                        // Note that system bars will only be "visible" if none of the
-                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-                        if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                            // TODO: The system bars are visible. Make any desired
-                            // adjustments to your UI, such as showing the action bar or
-                            // other navigational controls.
-                        } else {
-                            // TODO: The system bars are NOT visible. Make any desired
-                            // adjustments to your UI, such as hiding the action bar or
-                            // other navigational controls.
-                        }
-                    }
-                });
     }
 
     @Override
@@ -184,3 +189,5 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnT
 
 
 }
+//    protected abstract int getLayoutResId();
+//        setContentView(getLayoutResId());

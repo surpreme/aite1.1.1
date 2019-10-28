@@ -23,7 +23,8 @@ import androidx.annotation.Nullable;
 import com.example.jianancangku.R;
 import com.example.jianancangku.args.Constant;
 import com.example.jianancangku.bean.BaseData;
-import com.example.jianancangku.bean.MsgCenterbean;
+import com.example.jianancangku.bean.LogInBean;
+import com.example.jianancangku.bean.QrBean;
 import com.example.jianancangku.callback.AbsCallback;
 import com.example.jianancangku.utils.BeanConvertor;
 import com.example.jianancangku.utils.LogUtils;
@@ -35,7 +36,6 @@ import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.base.Request;
 
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,6 +45,10 @@ import butterknife.Unbinder;
 import cn.bingoogolapple.qrcode.core.BarcodeType;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
+
+import static com.example.jianancangku.args.Constant.qrgohomeAddress;
+import static com.example.jianancangku.args.Constant.qroutThingHouseAdrress;
+import static com.example.jianancangku.args.Constant.qrouthomeAddress;
 
 public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate, View.OnClickListener {
     private ZXingView zXingView;
@@ -68,7 +72,6 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
         init();
 
 
-
     }
 
 
@@ -77,9 +80,11 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
         String a = getIntent().getStringExtra("outinterface");
         assert a != null;
         if (a.equals("go"))
-            qrinterface = Constant.qrgohomeAddress;
+            qrinterface = qrgohomeAddress;
         if (a.equals("out"))
-            qrinterface = Constant.qrouthomeAddress;
+            qrinterface = qrouthomeAddress;
+        if (a.equals("houseAll"))
+            qrinterface= qroutThingHouseAdrress;
 
         iv_back.setOnClickListener((View.OnClickListener) this);
         thingnumber_txt.setOnClickListener((View.OnClickListener) context);
@@ -95,13 +100,18 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
         zXingView.startSpotAndShowRect(); // 显示扫描框，并开始识别
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
-                new NewMyTask().execute();
+//               getDatas(data);
             }
 
 
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
 
     @Override
     protected void onStart() {
@@ -117,6 +127,11 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
     @Override
     protected void onRestart() {
         super.onRestart();
+//        PopWindowsUtils.getmInstance().showQRerrorPopupWindow(context,"二维码异常 请重新扫描二维码");
+//        getDatas("2000000000130401");
+//        PopWindowsUtils.getmInstance().showcenterPopupWindow(context);
+//        PopWindowsUtils.getmInstance().showQRerrorPopupWindow(context, "test");
+
     }
 
     @Override
@@ -137,12 +152,6 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
     @Override
     public void onScanQRCodeSuccess(String result) {
         getDatas(result);
-//        if (isSuccessed)
-//            showPopwindow(1);
-//        else
-//        Toast.makeText(this, "扫描结果" + result, Toast.LENGTH_LONG).show();
-//        LogUtils.d("返回", result);
-
     }
 
     private void showPopwindow(int type) {
@@ -154,19 +163,7 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
         if (type == -1)
             LogUtils.d("fail");
         if (type == 1) {
-            PopWindowsUtils.getmInstance().showcenterPopupWindow(context, R.layout.qrcode_layout, 1.0f);
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            PopWindowsUtils.getmInstance().dismissPopWindow();
-                        }
-                    });
-                }
-            }, 2000);
+
         }
     }
 
@@ -194,7 +191,8 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
      */
     @Override
     public void onScanQRCodeOpenCameraError() {
-        ToastUtils.showToast(QrCodeActivity.this, "扫描二维码出错");
+        PopWindowsUtils.getmInstance().showQRerrorPopupWindow(context,"二维码异常 请重新扫描二维码");
+//        ToastUtils.showToast(QrCodeActivity.this, "扫描二维码出错");
 
     }
 
@@ -211,61 +209,50 @@ public class QrCodeActivity extends BaseActivity implements QRCodeView.Delegate,
         }
     }
 
-    class NewMyTask extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (TextUtils.isEmpty(s)) {
-                Toast.makeText(QrCodeActivity.this, "未扫描到二维码", Toast.LENGTH_LONG).show();
-            } else {
-                getDatas(s);
-
-            }
-            super.onPostExecute(s);
-        }
-    }
-
     private void getDatas(String result) {
-        if (TextUtils.isEmpty(qrinterface)||qrinterface==null)
+        if (TextUtils.isEmpty(qrinterface) || qrinterface == null)
             return;
         HttpParams params = new HttpParams();
         params.put("key", Constant.key);
         params.put("package_sn", result);
-        OkGo.<BaseData>post(qrinterface)
+        OkGo.<BaseData<QrBean>>post(qrinterface)
                 .tag(context)
                 .params(params)
-                .execute(new AbsCallback<BaseData>() {
+                .execute(new com.lzy.okgo.callback.AbsCallback<BaseData<QrBean>>() {
                     @Override
-                    public BaseData convertResponse(okhttp3.Response response) throws Throwable {
+                    public BaseData<QrBean> convertResponse(okhttp3.Response response) throws Throwable {
                         LogUtils.d(response);
-                        assert response.body() != null;
                         final BaseData baseData = BeanConvertor.convertBean(response.body().string(), BaseData.class);
-                        assert baseData != null;
-                        isSuccessed = baseData.isSuccessed();
-                        ToastUtils.showToast(context, baseData.isSuccessed() + "++++++++++++++");
-                        if (baseData.isSuccessed())
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showPopwindow(1);
-                                }
-                            });
+                        final QrBean qrBean = BeanConvertor.convertBean(baseData.getDatas(), QrBean.class);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                               if (!baseData.isSuccessed())
+                                    PopWindowsUtils.getmInstance().showQRerrorPopupWindow(context, qrBean.getError());
+                               else{
+                                   String msg=null;
+                                   if (qrinterface.equals(qrgohomeAddress))
+                                       msg="扫描入库成功" ;
+                                   else if (qrinterface.equals(qrouthomeAddress))
+                                       msg="扫描出库成功" ;
+                                   else if (qrinterface.equals(qroutThingHouseAdrress))
+                                       msg="包裹打包成功" ;
+
+                                   PopWindowsUtils.getmInstance().showcenterPopupWindow(context,msg);
+                               }
+                            }
+                        });
+
                         return baseData;
                     }
 
                     @Override
-                    public void onStart(Request<BaseData, ? extends Request> request) {
+                    public void onStart(Request<BaseData<QrBean>, ? extends Request> request) {
 
                     }
 
                     @Override
-                    public void onSuccess(Response<BaseData> response) {
-
+                    public void onSuccess(Response<BaseData<QrBean>> response) {
 
                     }
                 });

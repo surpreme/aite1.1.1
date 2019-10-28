@@ -40,3 +40,7 @@
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -keep class okio.**{*;}
 -dontwarn okio.**
+
+#jpush
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }

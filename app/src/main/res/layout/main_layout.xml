@@ -33,14 +33,13 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/woker"
                     android:layout_width="46dp"
                     android:layout_height="20dp"
                     android:background="@drawable/juxing_white_background"
                     android:gravity="center"
                     android:text="主管"
                     android:textColor="@color/white"
-
                     android:textSize="12sp" />
 
                 <View
@@ -48,7 +47,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/worker_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Synon"
@@ -349,6 +348,7 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/call_senndthingworker_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
@@ -369,42 +369,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="35dp"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="170dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
-
-        <LinearLayout
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/round_background_white"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
@@ -414,12 +379,11 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:id="@+id/problem_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
                             android:layout_centerInParent="true"
-                            android:layout_marginTop="30dp"
-                            app:srcCompat="@mipmap/myselfuserfix" />
+                            android:src="@mipmap/problems_icon" />
 
                         <TextView
                             android:layout_width="80dp"
@@ -428,52 +392,20 @@
                             android:layout_centerInParent="true"
                             android:layout_marginBottom="20dp"
                             android:gravity="center"
-                            android:text="@string/userfixtxt"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
+                            android:text="包裹异常"
+                            android:textColor="#ff333333"
+                            android:textSize="13sp" />
 
                     </RelativeLayout>
                 </LinearLayout>
+
+
+                <View
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:background="@color/glay" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginTop="30dp"
-                        app:srcCompat="@mipmap/setting_icon" />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginBottom="20dp"
-                        android:gravity="center"
-                        android:text="@string/settingtxt"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-                </RelativeLayout>
-            </LinearLayout>
         </LinearLayout>
-
-    </RelativeLayout>
-
+    </LinearLayout>
 
 </RelativeLayout>

@@ -1,9 +1,11 @@
 package com.example.jianancangku.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jianancangku.R;
 import com.example.jianancangku.args.Constant;
 import com.example.jianancangku.bean.BaseData;
-import com.example.jianancangku.bean.MsgCenterbean;
-import com.example.jianancangku.bean.ThingfixBean;
+import com.example.jianancangku.bean.KeyBean;
 import com.example.jianancangku.bean.WorkerfixBean;
 import com.example.jianancangku.callback.AbsCallback;
 import com.example.jianancangku.utils.BeanConvertor;
 import com.example.jianancangku.utils.LogUtils;
 import com.example.jianancangku.utils.ToastUtils;
-import com.example.jianancangku.view.adpter.ThingfixAdapter;
+import com.example.jianancangku.view.PopWindowsUtils;
 import com.example.jianancangku.view.adpter.WorkerFixAdapter;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
@@ -37,16 +38,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.example.jianancangku.args.Constant.killworkerAdrress;
+
 public class WorkerfixActivity extends BaseActivity {
     @BindView(R.id.workerfix_recy)
     RecyclerView workerfix_recy;
     private Unbinder unbinder;
-    private List<WorkerfixBean.ListBean> recydatalist;
     private WorkerFixAdapter workerFixAdapter;
     @BindView(R.id.refreshLayout)
-     SmartRefreshLayout smartRefreshLayout;
+    SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.iv_back_workerfix)
     ImageView iv_back_workerfix;
+    @BindView(R.id.add_txt)
+    TextView add_txt;
+    private int pages = 1;
+    private List<WorkerfixBean.ListBean> allList;
 
 
     @Override
@@ -58,7 +64,18 @@ public class WorkerfixActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void init() {
+        add_txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddWorkerActivity.class));
+            }
+        });
         iv_back_workerfix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +88,7 @@ public class WorkerfixActivity extends BaseActivity {
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
+                pages = 1;
                 getDatas();
                 refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
             }
@@ -78,16 +96,19 @@ public class WorkerfixActivity extends BaseActivity {
         smartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
+                pages++;
+                getDatas();
                 refreshlayout.finishLoadMore(1000/*,false*/);//传入false表示加载失败
             }
         });
+        getDatas();
+
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getDatas();
     }
 
     @Override
@@ -97,30 +118,89 @@ public class WorkerfixActivity extends BaseActivity {
 
     }
 
+    private void killworkerPost(String warehouse_clerk_id, String isok) {
+        HttpParams params = new HttpParams();
+        params.put("key", Constant.key);
+        params.put("warehouse_clerk_id", warehouse_clerk_id);
+        params.put("type", isok);//1 禁用 2 启用
+
+        OkGo.<BaseData<KeyBean>>post(Constant.killworkerAdrress)
+                .tag(context)
+                .params(params)
+                .execute(new AbsCallback<BaseData<KeyBean>>() {
+                    @Override
+                    public BaseData<KeyBean> convertResponse(okhttp3.Response response) throws Throwable {
+                        final BaseData baseData = BeanConvertor.convertBean(response.body().string(), BaseData.class);
+                        final KeyBean keyBean = BeanConvertor.convertBean(baseData.getDatas(), KeyBean.class);
+                        ToastUtils.showToast(context, baseData.isSuccessed() ? keyBean.getMessage() : keyBean.getError());
+                        return null;
+                    }
+
+                    @Override
+                    public void onStart(Request<BaseData<KeyBean>, ? extends Request> request) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Response<BaseData<KeyBean>> response) {
+                    }
+                });
+
+    }
+
     private void getDatas() {
         HttpParams params = new HttpParams();
         params.put("key", Constant.key);
-        params.put("p", 1);
-        params.put("size", 20);
-//        params.put("start_time", 10);
-//        params.put("end_time", Constant.key);
-//        params.put("province_id", 2);
-//        params.put("city_id", 10);
-//        params.put("package_sn", 2);
+        params.put("p", pages);
+        params.put("size", 50);
         OkGo.<BaseData<WorkerfixBean.ListBean>>post(Constant.workerFixAddress)
                 .tag(context)
                 .params(params)
                 .execute(new AbsCallback<BaseData<WorkerfixBean.ListBean>>() {
                     @Override
                     public BaseData<WorkerfixBean.ListBean> convertResponse(okhttp3.Response response) throws Throwable {
-                        LogUtils.d(response);
-                        assert response.body() != null;
                         final BaseData baseData = BeanConvertor.convertBean(response.body().string(), BaseData.class);
-                        assert baseData != null;
                         final WorkerfixBean workerfixBean = BeanConvertor.convertBean(baseData.getDatas(), WorkerfixBean.class);
-                        assert workerfixBean != null;
-                        recydatalist = workerfixBean.getList();
-                        LogUtils.d(baseData.getDatas());
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (pages == 1) allList = workerfixBean.getList();
+                                else allList.addAll(workerfixBean.getList());
+                                workerFixAdapter = new WorkerFixAdapter(context, allList);
+                                workerfix_recy.setAdapter(workerFixAdapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                                workerfix_recy.setLayoutManager(linearLayoutManager);
+                                workerfix_recy.setItemAnimator(new DefaultItemAnimator());
+                                workerFixAdapter.setUnIcallback(new WorkerFixAdapter.UnIcallback() {
+                                    @Override
+                                    public void getPostion(int postion) {
+                                        PopWindowsUtils.getmInstance().showdialogPopwindow(context, new PopWindowsUtils.showdialogPopwindowIcallback() {
+                                            @Override
+                                            public void call(boolean isok) {
+                                                killworkerPost(workerfixBean.getList().get(postion).getWarehouse_clerk_id(), isok ? "2" : "1");
+                                            }
+                                        }, "确定要禁用员工: " + workerfixBean.getList().get(postion).getName() + "？");
+                                    }
+                                });
+
+
+                                workerFixAdapter.setIcallback(new WorkerFixAdapter.Icallback() {
+                                    @Override
+                                    public void getPostion(int postion) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("id", workerfixBean.getList().get(postion).getWarehouse_clerk_id());
+                                        Intent intent = new Intent(context, WorkerFixChirenActivity.class);
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
+                                    }
+
+
+                                });
+                            }
+                        });
+
+
                         return null;
                     }
 
@@ -131,19 +211,15 @@ public class WorkerfixActivity extends BaseActivity {
 
                     @Override
                     public void onSuccess(Response<BaseData<WorkerfixBean.ListBean>> response) {
-                        if (recydatalist == null) {
-                            ToastUtils.showToast(context, "数据错误");
-                            return;
-                        }
-                        workerFixAdapter = new WorkerFixAdapter(context, recydatalist);
-                        workerfix_recy.setAdapter(workerFixAdapter);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                        workerfix_recy.setLayoutManager(linearLayoutManager);
-                        workerfix_recy.setItemAnimator(new DefaultItemAnimator());
 
                     }
-                });
 
+                });
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
+

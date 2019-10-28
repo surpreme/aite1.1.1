@@ -85,6 +85,7 @@
             android:layout_height="43dp"
             android:background="@null"
             android:ems="10"
+            android:text=""
             android:inputType="textEmailAddress"
             android:textColor="#999999"
             android:textSize="14sp" />
@@ -121,6 +122,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:hint="登录密码"
+                android:text=""
                 android:background="@null"
                 android:textColorHint="#FF6F6F6F"
                 android:textColor="@color/glay"

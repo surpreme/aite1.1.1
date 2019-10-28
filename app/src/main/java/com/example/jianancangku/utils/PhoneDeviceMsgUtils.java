@@ -1,29 +1,21 @@
 package com.example.jianancangku.utils;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.Enumeration;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import static com.example.jianancangku.App.getContext;
 
 public class PhoneDeviceMsgUtils {
 
@@ -96,6 +88,7 @@ public class PhoneDeviceMsgUtils {
         }
         return null;
     }
+
 
     private static String intIP2StringIP(int ip) {
         return (ip & 0xFF) + "." +

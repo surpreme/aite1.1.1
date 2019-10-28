@@ -19,13 +19,13 @@ public class BaseData<T> implements Serializable {
      * datas :
      */
 
-    private int code;
+    private Object code;
     private T datas;
     private boolean isSuccessed;
 
 
     public boolean isSuccessed() {
-        return getCode() == 200;
+        return getCode().toString().equals("200");
     }
 
     public void setSuccessed(boolean successed) {
@@ -33,11 +33,10 @@ public class BaseData<T> implements Serializable {
     }
 
 
-
     private String errorMsg;
 
     public String getErrorMsg() {
-        if (!isSuccessed()){
+        if (!isSuccessed()) {
             ErrorBean code = BeanConvertor.convertBean(datas, ErrorBean.class);
             return code.getError();
         }
@@ -48,11 +47,11 @@ public class BaseData<T> implements Serializable {
         this.errorMsg = msg;
     }
 
-    public int getCode() {
+    public Object getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(Object code) {
         this.code = code;
     }
 
@@ -64,37 +63,37 @@ public class BaseData<T> implements Serializable {
         this.datas = datas;
     }
 
-//    public boolean isSuccess() {
+    //    public boolean isSuccess() {
 //        return getCode() == MainUtil.SUCCESS_CODE;
 //    }
-public class LogInData implements Serializable {
-    private String username;
-    private String key;
-    private T config;
+    public class LogInData implements Serializable {
+        private String username;
+        private String key;
+        private T config;
 
-    public String getUsername() {
-        return username;
-    }
+        public String getUsername() {
+            return username;
+        }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+        public void setUsername(String username) {
+            this.username = username;
+        }
 
-    public String getKey() {
-        return key;
-    }
+        public String getKey() {
+            return key;
+        }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+        public void setKey(String key) {
+            this.key = key;
+        }
 
-    public T getConfig() {
-        return config;
-    }
+        public T getConfig() {
+            return config;
+        }
 
-    public void setConfig(T config) {
-        this.config = config;
+        public void setConfig(T config) {
+            this.config = config;
+        }
     }
-}
 
 }

@@ -1,8 +1,10 @@
 package com.example.jianancangku.utils;
 
-import android.app.Application;
 import android.content.Context;
+import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class ToastUtils {
     private static Toast toast;
@@ -14,6 +16,8 @@ public class ToastUtils {
             toast.setText(msg);
         toast.show();
     }
-
+    public static void showSnakbar(View view, String msg,View.OnClickListener onClickListener){
+        Snackbar.make(view, msg, Snackbar.LENGTH_LONG).setAction("确定", onClickListener).show();
+    }
 
 }

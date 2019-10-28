@@ -41,6 +41,15 @@ public class Thingbookbean implements Serializable {
         private String business_address;
         private String bale_id;
         private String package_sn;
+        private String warehouse_order_id;
+
+        public String getWarehouse_order_id() {
+            return warehouse_order_id;
+        }
+
+        public void setWarehouse_order_id(String warehouse_order_id) {
+            this.warehouse_order_id = warehouse_order_id;
+        }
 
         public String getCreate_time() {
             return create_time;

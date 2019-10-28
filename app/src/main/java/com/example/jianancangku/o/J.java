@@ -1,7 +1,5 @@
 package com.example.jianancangku.o;
 
-import android.widget.LinearLayout;
-
 public class J {
     //                        List< MsgCenterbean.ListBean > t=msgCenterbean.getList();
 ////                        JsonArray jsonArray=t;

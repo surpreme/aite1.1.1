@@ -11,8 +11,8 @@ android {
         applicationId 'com.example.jianancangku'
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 101
-        versionName '1.0.1'
+        versionCode 104
+        versionName '1.0.4'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -23,7 +23,7 @@ android {
 
         manifestPlaceholders = [
                 JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : "bb3cca6697e02f711c45806e", //JPush上注册的包名对应的appkey（*换成你的*）
+                JPUSH_APPKEY : "b813a28fd6babf072280ae12", //JPush上注册的包名对应的appkey（*换成你的*）
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
 
         ]
@@ -41,7 +41,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -90,6 +90,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.alibaba:fastjson:1.2.61'
     implementation 'com.alibaba:fastjson:1.2.61.android'
+    //知乎图片选择器
+    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
 
 
     //jpush

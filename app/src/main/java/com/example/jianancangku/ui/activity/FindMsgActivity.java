@@ -16,12 +16,15 @@ import android.widget.TextView;
 
 import com.example.jianancangku.R;
 import com.example.jianancangku.bean.BaseData;
+import com.example.jianancangku.bean.ChangeKeyBean;
 import com.example.jianancangku.bean.LogInBean;
 import com.example.jianancangku.callback.AbsCallback;
 import com.example.jianancangku.utils.BeanConvertor;
 import com.example.jianancangku.utils.LogUtils;
+import com.example.jianancangku.utils.NetworkUtils;
 import com.example.jianancangku.utils.StatusBarUtils;
 import com.example.jianancangku.utils.ToastUtils;
+import com.example.jianancangku.utils.http.HttpOkgoUtils;
 import com.example.jianancangku.view.PopWindowsUtils;
 import com.example.jianancangku.args.Constant;
 import com.lzy.okgo.OkGo;
@@ -34,13 +37,16 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import static com.example.jianancangku.args.Constant.phonecodefindkeyAddress;
 
 public class FindMsgActivity extends BaseActivity implements View.OnClickListener {
+    private int recLen = 30;
     private Button sendSms_btn;
+    private EditText find_key_phonenumber;
     @BindView(R.id.iv_back_findmsg)
     ImageView iv_back;
-    private int recLen = 10;
-    private EditText find_key_phonenumber;
     @BindView(R.id.phonesms_key)
     EditText phonesms_key;
     @BindView(R.id.key_new)
@@ -51,29 +57,16 @@ public class FindMsgActivity extends BaseActivity implements View.OnClickListene
     Button find_key_sure_btn;
     @BindView(R.id.findmsg_area_front_txt_id)
     TextView findmsg_area_front_txt_id;
+    Unbinder unbinder;
+    private String findkeytype = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.found_msg_layout);
-        ButterKnife.bind((Activity) context);
-
+        unbinder = ButterKnife.bind((Activity) context);
         initViews();
-    }
-
-
-
-    private void initViews() {
-        StatusBarUtils.setColor(context, Color.WHITE);
-        sendSms_btn = findViewById(R.id.sendSms_btn);
-        iv_back = findViewById(R.id.iv_back_findmsg);
-        iv_back.setOnClickListener(this);
-        find_key_phonenumber = findViewById(R.id.find_key_phonenumber);
-        sendSms_btn.setOnClickListener((View.OnClickListener) context);
-        findmsg_area_front_txt_id.setOnClickListener(this);
-        find_key_sure_btn.setOnClickListener(this);
-
-
     }
 
     @Override
@@ -85,38 +78,9 @@ public class FindMsgActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.find_key_sure_btn:
                 initSurebtn();
-//                finish();
                 break;
             case R.id.sendSms_btn:
-                sendSms_btn.setEnabled(false);
-                final Timer timer = new Timer();
-                initfindkey();
-                @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void handleMessage(Message msg) {
-                        if (msg.what == 1) {
-                            if (!(recLen <= 0))
-                                sendSms_btn.setText(recLen + " S");
-                            if (recLen <= 0) {
-                                timer.cancel();
-                                recLen = 10;
-                                sendSms_btn.setText(R.string.send);
-                                sendSms_btn.setEnabled(true);
-                            }
-                        }
-                    }
-                };
-                TimerTask task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        recLen--;
-                        Message message = new Message();
-                        message.what = 1;
-                        handler.sendMessage(message);
-                    }
-                };
-                timer.schedule(task, 1000, 1000);
+                sendFindMsg();
                 break;
             case R.id.findmsg_area_front_txt_id:
                 showPopWindow();
@@ -124,60 +88,127 @@ public class FindMsgActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    private void initSurebtn() {
-        String findkeyphonenumber=find_key_phonenumber.getText().toString();
-        String phonesmskey=phonesms_key.getText().toString();
-        String keynew=key_new.getText().toString();
-        String keysure=key_sure.getText().toString();
-        if (TextUtils.isEmpty(findkeyphonenumber))
-            ToastUtils.showToast(this,"手机号为空");
-        if (TextUtils.isEmpty(phonesmskey))
-            ToastUtils.showToast(this,"验证码");
-        if (TextUtils.isEmpty(keysure))
-            ToastUtils.showToast(this,"请输入密码");
-        if (TextUtils.isEmpty(keynew)||TextUtils.isEmpty(keysure))
-            ToastUtils.showToast(this,"请检查密码");
-        if (keynew.equals(keysure)&&!TextUtils.isEmpty(keynew)&&!TextUtils.isEmpty(keysure))
-            ToastUtils.showToast(this,"密码相同");
+    private void initViews() {
+        StatusBarUtils.setColor(context, Color.WHITE);
+        initIntent();
+        sendSms_btn = findViewById(R.id.sendSms_btn);
+        iv_back = findViewById(R.id.iv_back_findmsg);
+        iv_back.setOnClickListener(this);
+        find_key_phonenumber = findViewById(R.id.find_key_phonenumber);
+        sendSms_btn.setOnClickListener((View.OnClickListener) context);
+        findmsg_area_front_txt_id.setOnClickListener(this);
+        find_key_sure_btn.setOnClickListener(this);
 
 
     }
 
-    private void initfindkey() {
-        String phonenumber = find_key_phonenumber.getText().toString().trim();
+    private void initIntent() {
+        String way = getIntent().getStringExtra("findkeyway");
+        if (way == null || TextUtils.isEmpty(way)) return;
+        if (!way.equals("phone")) findmsg_area_front_txt_id.setVisibility(View.GONE);
+        findkeytype = way.equals("phone") ? "Ismobilereg" : "Isemailreg";
+    }
+
+
+    private void sendFindMsg() {
+        if (find_key_phonenumber.getText().toString().trim() == null || TextUtils.isEmpty(find_key_phonenumber.getText().toString().trim()))
+            return;
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            ToastUtils.showToast(context, "网络错误");
+            return;
+        }
+        sendSms_btn.setEnabled(false);
+        phonecode(find_key_phonenumber.getText().toString().trim());
+        final Timer timer = new Timer();
+        @SuppressLint("HandlerLeak") final Handler handler = new Handler() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 1) {
+                    if (!(recLen <= 0))
+                        sendSms_btn.setText(recLen + " S");
+                    if (recLen <= 0) {
+                        timer.cancel();
+                        recLen = 30;
+                        sendSms_btn.setText(R.string.send);
+                        sendSms_btn.setEnabled(true);
+                    }
+                }
+            }
+        };
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                recLen--;
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        };
+        timer.schedule(task, 3000, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    private void initSurebtn() {
+        String findkeyphonenumber = find_key_phonenumber.getText().toString();
+        String phonesmskey = phonesms_key.getText().toString();
+        String keynew = key_new.getText().toString();
+        String keysure = key_sure.getText().toString();
+        if (TextUtils.isEmpty(findkeyphonenumber))
+            ToastUtils.showToast(this, "账号为空");
+        if (TextUtils.isEmpty(phonesmskey))
+            ToastUtils.showToast(this, "验证码为空");
+        if (TextUtils.isEmpty(keysure))
+            ToastUtils.showToast(this, "请输入密码");
+        if (TextUtils.isEmpty(keynew) || TextUtils.isEmpty(keysure))
+            ToastUtils.showToast(this, "请检查密码");
+        if (keynew.equals(keysure) && !TextUtils.isEmpty(keynew) && !TextUtils.isEmpty(keysure))
+            ToastUtils.showToast(this, "密码相同");
+        if (keynew.equals(keysure)) {
+            String num = phonesms_key.getText().toString().trim();
+            initfindkey(num);
+            ToastUtils.showToast(context, "请注意查看您的验证码");
+        }
+
+
+    }
+
+    private void phonecode(String phoneNumber) {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            ToastUtils.showToast(context, "当前无网络");
+            return;
+        }
+        HttpParams params = initPhonecodeHttpParams(phoneNumber);
+        HttpOkgoUtils.getmInstance().mFindMsgActivityPhoneCode(context, params, phonecodefindkeyAddress);
+    }
+
+    private HttpParams initPhonecodeHttpParams(String phoneNumber) {
         HttpParams params = new HttpParams();
-        params.put("mobile",phonenumber);
-        OkGo.<BaseData<LogInBean>>post(Constant.findkeyAddress)
-                .tag(context)
-                .params(params)
-                .execute(new AbsCallback<BaseData<LogInBean>>() {
-                    @Override
-                    public BaseData<LogInBean> convertResponse(okhttp3.Response response) throws Throwable {
-                        LogUtils.d(response);
-                        assert response.body() != null;
-                        final BaseData baseData = BeanConvertor.convertBean(response.body().toString().trim(), BaseData.class);
-//                        if (baseData.getCode() == 0) {
-//                            ToastUtils.showToast(context, "请填写正确手机号");
-//                        }
-                        assert baseData != null;
-                        LogUtils.d(baseData.getCode()+"");
-//                        if (baseData.getCode() == 200) {
-                            ToastUtils.showToast(context, baseData.getCode() + "");
-//                        }
+        params.put("mobile", phoneNumber);
+        return params;
+    }
 
-                        return null;
-                    }
+    private void initfindkey(String num) {
+        if (!NetworkUtils.isNetworkAvailable(context))
+            ToastUtils.showSnakbar(getWindow().getDecorView(), "当前无网络", null);
+        String phonenumber = find_key_phonenumber.getText().toString().trim();
+        if (TextUtils.isEmpty(phonenumber))
+            return;
+        HttpParams params = initfindkeyHttpparams(num, phonenumber);
+        HttpOkgoUtils.getmInstance().mFindMsgActivityok(context, params, Constant.findkeyAddress);
+    }
 
-                    @Override
-                    public void onStart(Request<BaseData<LogInBean>, ? extends Request> request) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Response<BaseData<LogInBean>> response) {
-
-                    }
-                });
+    private HttpParams initfindkeyHttpparams(String num, String phonenumber) {
+        HttpParams params = new HttpParams();
+        params.put("username", phonenumber);
+        params.put("regtype", findkeytype);
+        params.put("mobile_code", num);
+        return params;
     }
 
     private void showPopWindow() {
@@ -197,9 +228,4 @@ public class FindMsgActivity extends BaseActivity implements View.OnClickListene
                 "+86",
                 v);
     }
-
-//    @OnClick(R.id.findmsg_area_front_txt_id)
-//    public void onViewClicked() {
-//        showPopWindow();
-//    }
 }

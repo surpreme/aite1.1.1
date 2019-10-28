@@ -78,8 +78,7 @@
                 android:layout_height="40dp"
                 android:background="@null"
                 android:ems="10"
-                android:hint="请输入您的手机号"
-                android:inputType="phone"
+                android:hint="请输入您的账号"
                 android:textSize="14sp" />
         </LinearLayout>
 

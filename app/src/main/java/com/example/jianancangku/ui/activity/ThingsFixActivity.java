@@ -1,6 +1,7 @@
 package com.example.jianancangku.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,25 +19,30 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.jianancangku.R;
 import com.example.jianancangku.args.Constant;
+import com.example.jianancangku.bean.AreaBean;
 import com.example.jianancangku.bean.BaseData;
 import com.example.jianancangku.bean.ThingfixBean;
-import com.example.jianancangku.callback.ICallback;
 import com.example.jianancangku.ui.fragment.GoHouseFragment;
+import com.example.jianancangku.ui.fragment.GoThingFragment;
 import com.example.jianancangku.ui.fragment.OutHouseFragment;
+import com.example.jianancangku.ui.fragment.OutThingFragment;
 import com.example.jianancangku.utils.BeanConvertor;
 import com.example.jianancangku.utils.LogUtils;
-import com.example.jianancangku.utils.OkgoUtils;
 import com.example.jianancangku.utils.StatusBarUtils;
 import com.example.jianancangku.utils.TimeUtils;
 import com.example.jianancangku.utils.ToastUtils;
 import com.example.jianancangku.view.PopWindowsUtils;
 import com.example.jianancangku.view.adpter.ThingfixAdapter;
+import com.example.jianancangku.view.adpter.ThingsFixActivityViewPagerApdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
@@ -49,12 +55,16 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import static com.example.jianancangku.args.Constant.choiceareaAdrress;
 
 public class ThingsFixActivity extends BaseActivity implements View.OnClickListener {
     //      viewHolder.textView.setText (String.format(mContext.getString(R.string.xxx), mDatas.get ( position ) ));
@@ -68,11 +78,15 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
     private ThingsFixActivityViewPagerApdapter viewPagerAdapter;
     private View[] views;
     private List<ThingfixBean.ListBean> recydatalist;
+    private List<ThingfixBean.ListBean> morerecydatalist;
+
     private ThingfixAdapter thingfixAdapter;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.date_choice_center)
     LinearLayout date_choice_center;
+    @BindView(R.id.choice_area)
+    LinearLayout choice_area;
     @BindView(R.id.iv_back_mythings)
     ImageView iv_back;
     @BindView(R.id.things_fix_recy)
@@ -81,41 +95,106 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
     TextView toolbar_txt;
 
 
+    @BindView(R.id.choice_date_txt)
+    TextView choice_date_txt;
+    @BindView(R.id.choice_area_txt)
+    TextView choice_area_txt;
+    @BindView(R.id.choice_worker_txt)
+    TextView choice_worker_txt;
+    @BindView(R.id.choice)
+    ImageView choice;
+    @BindView(R.id.seacher)
+    ImageView seacher;
+
+    @BindView(R.id.choice_worker)
+    LinearLayout choice_worker;
+
+    @BindView(R.id.choice_layout)
+    LinearLayout choice_layout;
+
+    Unbinder unbinder;
+    //  省
+    private List<String> options1Items = new ArrayList<>();
+    List<String> city;
+    //  市
+    private List<List<String>> options2Items = new ArrayList<>();
+    //  区
+    private List<List<List<String>>> options3Items = new ArrayList<>();
+    //  省地理
+    private List<String> options1Itemsnumber = new ArrayList<>();
+    List<String> citynumber;
+    //  市地理
+    private List<List<String>> options2Itemsnumber = new ArrayList<>();
+    //  区地理
+    private List<List<List<String>>> options3Itemsnumber = new ArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.thingsfix_layout);
-        ButterKnife.bind((Activity) context);
+        unbinder = ButterKnife.bind((Activity) context);
         init();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        smartRefreshLayout.finishRefresh(3000);//延迟3000毫秒后结束刷新
+
+    }
+
+
+    private void sendRegion() {
+
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+        getMyDatas(null, null, null, null, null);
+        getAreasDatas();
     }
+
+    private int page = 1;
 
     private void init() {
         StatusBarUtils.setColor(context, Color.WHITE);
+        date_choice_center.setVisibility(View.GONE);
         iv_back.setOnClickListener((View.OnClickListener) this);
+        choice_area.setOnClickListener(this);
+        choice_worker.setOnClickListener((View.OnClickListener) context);
         toolbar_txt.setOnClickListener((View.OnClickListener) context);
         viewPager = findViewById(R.id.thingfix_viewpager);
         get_choice_time_txt = findViewById(R.id.get_choice_time_txt);
         choice_timer_son = findViewById(R.id.choice_timer_son);
+        choice.setOnClickListener((View.OnClickListener) context);
+
+        choice_layout.setVisibility(View.GONE);
+        choice_area.setVisibility(View.GONE);
+        choice_worker.setVisibility(View.GONE);
+        choice_timer_son.setVisibility(View.GONE);
+        seacher.setOnClickListener((View.OnClickListener) context);
+
         //下拉刷新
         smartRefreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
         smartRefreshLayout.setRefreshHeader(new WaterDropHeader(context));
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                getDatas();
                 refreshlayout.finishRefresh(1000/*,false*/);//传入false表示刷新失败
+//                if (page == 1)
+//                    ToastUtils.showToast(context, "当前为顶部");
+                getMyDatas(null, null, null, null, null);
             }
         });
         smartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
                 refreshlayout.finishLoadMore(1000/*,false*/);//传入false表示加载失败
+                page++;
+                getMyDatas(null, null, null, null, null);
             }
         });
         initChoiceTime();
@@ -124,19 +203,14 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
         get_choice_time_txt.setText(TimeUtils.getCurrentYYMMDD());
 
 //        initAreaChoice();
-        choice_timer_son.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pvTime.show(get_choice_time_txt, true);
-            }
-        });
+        choice_timer_son.setOnClickListener((View.OnClickListener) context);
+        initWokers();
+
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        getDatas();
-
+    private void initWokers() {
+        tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
     }
 
     private void initFragment() {
@@ -172,37 +246,23 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
-    private void getDatas() {
+    private void getMyDatas(String start_time, String end_time, String province_id, String city_id, String package_sn) {
         HttpParams params = new HttpParams();
         params.put("key", Constant.key);
-        params.put("p", 1);
-        params.put("size", 5);
-//        params.put("start_time", 10);
-//        params.put("end_time", Constant.key);
-//        params.put("province_id", 2);
-//        params.put("city_id", 10);
-//        params.put("package_sn", 2);
-//        OkgoUtils<ThingfixBean> okgoUtils = new OkgoUtils<ThingfixBean>();
-//        okgoUtils.post(Constant.LogInAddress, context, params, new ICallback() {
-//            @Override
-//            public void onSuccess(String result, List list) {
-//                if (list == null) {
-//                    ToastUtils.showToast(context, "数据错误");
-//                    return;
-//                }
-//                thingfixAdapter = new ThingfixAdapter(context, list);
-//                things_fix_recy.setAdapter(thingfixAdapter);
-//                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-//                things_fix_recy.setLayoutManager(linearLayoutManager);
-//                things_fix_recy.setItemAnimator(new DefaultItemAnimator());
-//            }
-//
-//            @Override
-//            public void onFailure(String e) {
-//                ToastUtils.showToast(context,e);
-//
-//            }
-//        });
+        params.put("p", page);
+        params.put("size", 20);
+
+
+        if (start_time != null)
+            params.put("start_time", start_time);
+        if (end_time != null)
+            params.put("end_time", end_time);
+        if (province_id != null)
+            params.put("province_id", Constant.key);
+        if (city_id != null)
+            params.put("city_id", city_id);
+        if (package_sn != null)
+            params.put("package_sn", package_sn);
 
         OkGo.<BaseData<ThingfixBean.ListBean>>post(Constant.thingsFixAddress)
                 .tag(context)
@@ -211,10 +271,17 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public BaseData<ThingfixBean.ListBean> convertResponse(okhttp3.Response response) throws Throwable {
                         LogUtils.d(response);
+                        assert response.body() != null;
                         final BaseData baseData = BeanConvertor.convertBean(response.body().string(), BaseData.class);
+                        assert baseData != null;
                         final ThingfixBean thingfixBean = BeanConvertor.convertBean(baseData.getDatas(), ThingfixBean.class);
-                        recydatalist = thingfixBean.getList();
-                        LogUtils.d(recydatalist);
+                        LogUtils.d(thingfixBean.getHasmore() + "分页");
+                        if (page != 1)
+                            morerecydatalist = thingfixBean.getList();
+                        else
+                            recydatalist = thingfixBean.getList();
+
+
                         return null;
                     }
 
@@ -230,7 +297,11 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
                             ToastUtils.showToast(context, "数据错误");
                             return;
                         }
-                        thingfixAdapter = new ThingfixAdapter(context, recydatalist);
+                        if (page != 1) {
+                            recydatalist.addAll(morerecydatalist);
+                            thingfixAdapter.notifyDataSetChanged();
+                        } else
+                            thingfixAdapter = new ThingfixAdapter(context, recydatalist);
                         things_fix_recy.setAdapter(thingfixAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                         things_fix_recy.setLayoutManager(linearLayoutManager);
@@ -240,51 +311,6 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
                 });
 
     }
-//        ║ {"hasmore":1,"list":[{"create_time":"2019-10-12 10:09:51","business_address":"湖北省\t十堰市\t张湾区123","package_sn":"2000000000104001","type":"2"},{"create_time":"2019-10-11 19:28:40","business_address":"安徽省\t芜湖市\t三山区tgj","package_sn":"2000000000105201","type":"2"},{"create_time":"2019-10-11 19:27:50","business_address":"安徽省\t芜湖市\t三山区tgj","package_sn":"2000000000105201","type":"1"},{"create_time":"2019-10-11 19:08:32","business_address":"安徽省\t芜湖市\t三山区tgj","package_sn":"2000000000105001","type":"2"},{"create_time":"2019-10-11 19:08:21","business_address":"安徽省\t芜湖市\t三山区tgj","package_sn":"2000000000105001","type":"1"}]}
-
-//地区选择 未完成
-//    private void initAreaChoice() {
-//        pvOptions = new OptionsPickerBuilder(this, new OptionsPickerView.OnOptionsSelectListener() {
-//            @Override
-//            public void onOptionsSelect(int options1, int option2, int options3 ,View v) {
-//                //返回的分别是三个级别的选中位置
-//                String tx = options1Items.get(options1).getPickerViewText()
-//                        + options2Items.get(options1).get(option2)
-//                        + options3Items.get(options1).get(option2).get(options3).getPickerViewText();
-//                ToastUtils.showToast(ThingsFixActivity.this,tx);
-//            }
-//        }) .setOptionsSelectChangeListener(new OnOptionsSelectChangeListener() {
-//            @Override
-//            public void onOptionsSelectChanged(int options1, int options2, int options3) {
-//                String str = "options1: " + options1 + "\noptions2: " + options2 + "\noptions3: " + options3;
-//
-////                ToastUtils.showToast(ThingsFixActivity.this,str);
-//
-//            }
-//        })
-//                .setSubmitText("确定")//确定按钮文字
-//                .setCancelText("取消")//取消按钮文字
-//                .setTitleText("城市选择")//标题
-//                .setSubCalSize(18)//确定和取消文字大小
-//                .setTitleSize(20)//标题文字大小
-//                .setTitleColor(Color.BLACK)//标题文字颜色
-//                .setSubmitColor(Color.BLUE)//确定按钮文字颜色
-//                .setCancelColor(Color.BLUE)//取消按钮文字颜色
-//                .setTitleBgColor(0xFF333333)//标题背景颜色 Night mode
-//                .setBgColor(0xFF000000)//滚轮背景颜色 Night mode
-//                .setContentTextSize(18)//滚轮文字大小
-//                .setLinkage(false)//设置是否联动，默认true
-//                .setLabels("省", "市", "区")//设置选择的三级单位
-//                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-//                .setCyclic(false, false, false)//循环与否
-//                .setSelectOptions(1, 1, 1)  //设置默认选中项
-//                .setOutSideCancelable(false)//点击外部dismiss default true
-//                .isDialog(true)//是否显示为对话框样式
-//                .isRestoreItem(true)//切换时是否还原，设置默认选中第一项。
-//                .build();
-//
-//        pvOptions.setPicker(options1Items, options2Items, options3Items);//添加数据源
-//    }
 
     private void initChoiceTime() {
         Calendar selectedDate = Calendar.getInstance();
@@ -299,25 +325,19 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
                 String tim = TimeUtils.stampToDate(time);
                 if (!TextUtils.isEmpty(tim))
                     get_choice_time_txt.setText(tim);
-//                date_choice_center.setVisibility(View.VISIBLE);
+                LogUtils.e(String.valueOf(TimeUtils.getTime(time)));
+                getMyDatas(String.valueOf(TimeUtils.getTime(time)), null, null, null, null);
+                date_choice_center.setVisibility(View.VISIBLE);
             }
         })
                 .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
                 .setCancelText("取消")//取消按钮文字
                 .setSubmitText("确定")//确认按钮文字
-//                .setContentSize(18)//滚轮文字大小
-//                .setTitleSize(20)//标题文字大小
-//                .setTitleText("")//标题文字
                 .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示
-//                .isCyclic(true)//是否循环滚动
                 .setTitleColor(0xFFF9731E)//标题文字颜色
                 .setSubmitColor(0xFFF9731E)//确定按钮文字颜色
                 .setCancelColor(0xFFF9731E)//取消按钮文字颜色
-//                //.setTitleBgColor(0xFF666666)//标题背景颜色 Night mode
-//                .setBgColor(0xFF333333)//滚轮背景颜色 Night mode
-//                .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/
                 .setRangDate(startDate, endDate)//起始终止年月日设定
-//                //.setLabel("年","月","日","时","分","秒")//默认设置为年月日时分秒
                 .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
 //                .isDialog(true)//是否显示为对话框样式
                 .build();
@@ -334,8 +354,161 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
             case R.id.toolbar_txt:
                 showpopwindow();
                 break;
+            case R.id.choice_area:
+                initColor("choice_area");
+                initAreas();
+                break;
+            case R.id.choice_worker:
+                initColor("choice_worker");
+                initAreas();
+                break;
+            case R.id.choice:
+                initChoice();
+                break;
+            case R.id.choice_timer_son:
+                initColor("choice_date");
+                pvTime.show(get_choice_time_txt, true);
+                break;
+            case R.id.seacher:
+                startActivity(new Intent(context, SearchActivity.class));
+                break;
+
 
         }
+    }
+
+    boolean ischoice = false;
+
+    private void initChoice() {
+        if (!ischoice) {
+            choice_area.setVisibility(View.VISIBLE);
+//        choice_worker.setVisibility(View.VISIBLE);
+            choice_timer_son.setVisibility(View.VISIBLE);
+            choice_layout.setVisibility(View.VISIBLE);
+            date_choice_center.setVisibility(View.GONE);
+            ischoice = true;
+        } else {
+            choice_area.setVisibility(View.GONE);
+//        choice_worker.setVisibility(View.VISIBLE);
+            choice_timer_son.setVisibility(View.GONE);
+            date_choice_center.setVisibility(View.GONE);
+            choice_layout.setVisibility(View.GONE);
+            getMyDatas(null, null, null, null, null);
+            ischoice = false;
+        }
+
+    }
+
+    private void initColor(String msg) {
+        choice_area_txt.setTextColor(msg.equals("choice_area") ? getResources().getColor(R.color.yelllow) : getResources().getColor(R.color.glay));
+//        choice_worker_txt.setTextColor(msg.equals("choice_worker") ? getResources().getColor(R.color.yelllow) : getResources().getColor(R.color.glay));
+        choice_date_txt.setTextColor(msg.equals("choice_date") ? getResources().getColor(R.color.yelllow) : getResources().getColor(R.color.glay));
+    }
+
+    private void initAreas() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showPicker2();
+                pvOptions.show();
+
+            }
+        });
+
+
+    }
+
+    private void getAreasDatas() {
+        HttpParams params = new HttpParams();
+        params.put("key", Constant.key);
+        OkGo.<BaseData<AreaBean.ListBean>>post(choiceareaAdrress)
+                .tag(context)
+                .params(params)
+                .execute(new com.example.jianancangku.callback.AbsCallback<BaseData<AreaBean.ListBean>>() {
+                    @Override
+                    public BaseData<AreaBean.ListBean> convertResponse(okhttp3.Response response) throws Throwable {
+                        LogUtils.d(response.body());
+                        assert response.body() != null;
+                        final BaseData baseData = BeanConvertor.convertBean(response.body().string(), BaseData.class);
+                        assert baseData != null;
+                        final AreaBean areaBean = BeanConvertor.convertBean(baseData.getDatas(), AreaBean.class);
+                        for (int i = 0; i < areaBean.getList().size(); i++) {
+                            String provinceName = areaBean.getList().get(i).getArea_name();
+                            String provinceNamenumber = areaBean.getList().get(i).getArea_id();
+//                            LogUtils.d(provinceName);
+                            options1Items.add(provinceName);
+                            options1Itemsnumber.add(provinceNamenumber);
+                            List<AreaBean.ListBean.CitylistBean> list = areaBean.getList().get(i).getCitylist();
+//                            options2Items = new ArrayList<>();
+                            city = new ArrayList<>();
+                            citynumber = new ArrayList<>();
+                            for (int j = 0; j < list.size(); j++) {
+//                                LogUtils.e(list.get(j).getArea_name());
+                                city.add(list.get(j).getArea_name());
+                                citynumber.add(list.get(j).getArea_id());
+
+                            }
+                            options2Items.add(city);
+                            options2Itemsnumber.add(citynumber);
+
+                        }
+                        return baseData;
+                    }
+
+                    @Override
+                    public void onStart(Request<BaseData<AreaBean.ListBean>, ? extends Request> request) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Response<BaseData<AreaBean.ListBean>> response) {
+
+
+                    }
+                });
+
+    }
+
+    private void showPicker2() {
+        pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+////                    address = provinceBeanList.get(options1) + " " + cityList.get(options1).get(option2) + " " + districtList.get(options1).get(option2).get(options3);
+//                    address = provinceBeanList.get(options1) + "-" + cityList.get(options1).get(options2);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LogUtils.d(options1Itemsnumber.get(options1) + "---");
+                        getMyDatas(null, null, options1Itemsnumber.get(options1), null, null);
+//                        options1Items.get(options1)+options2Items.get(options1).get(options2)!=null?options2Items.get(options1).get(options2):null+options2Itemsnumber.get(options1).get(options2)!=null?options2Itemsnumber.get(options1).get(options2):null
+                        ToastUtils.showToast(context, options1Items.get(options1));
+
+                    }
+                });
+            }
+        }).setOptionsSelectChangeListener(new OnOptionsSelectChangeListener() {
+            @Override
+            public void onOptionsSelectChanged(int options1, int options2, int options3) {
+
+            }
+        }).setSubmitText("确定")//确定按钮文字
+                .setCancelText("取消")//取消按钮文字
+                .setTitleText("城市选择")//标题
+                .setSubCalSize(18)//确定和取消文字大小
+                .setTitleSize(20)//标题文字大小
+                .setTitleColor(0xFFF9731E)//标题文字颜色
+                .setSubmitColor(0xFFF9731E)//确定按钮文字颜色
+                .setCancelColor(0xFFF9731E)//取消按钮文字颜色
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .setCyclic(false, false, false)//循环与否
+                .setSelectOptions(0, 0, 0)  //设置默认选中项
+                .setOutSideCancelable(false)//点击外部dismiss default true
+//                .isDialog(true)//是否显示为对话框样式
+                .isRestoreItem(true)//切换时是否还原，设置默认选中第一项。
+                .build();
+        if (options1Items != null && options1Items != null)
+            pvOptions.setPicker(options1Items, options2Items);//添加数据源
+
     }
 
     private void showpopwindow() {
@@ -350,50 +523,40 @@ public class ThingsFixActivity extends BaseActivity implements View.OnClickListe
 
             }
         };
-        PopWindowsUtils.getmInstance().showfixthingPopupWindow(
+
+        PopWindowsUtils.getmInstance().showbokbarPopupWindow(
                 context,
-                toolbar_txt,
-                R.layout.thingsfix_layout,
-                0.9f,
-                "员工订单",
-                v);
+                toolbar_txt, new PopWindowsUtils.Icallback() {
+                    @Override
+                    public String call(String msg) {
+                        if (msg.equals("1")) {
+                            toolbar_txt.setText("我的订单");
+                            things_fix_recy.setVisibility(View.VISIBLE);
+                            tabLayout.setVisibility(View.GONE);
+                            viewPager.setVisibility(View.GONE);
+                        } else if (msg.equals("2")) {
+                            toolbar_txt.setText("员工订单");
+                            things_fix_recy.setVisibility(View.GONE);
+                            tabLayout.setVisibility(View.VISIBLE);
+                            viewPager.setVisibility(View.VISIBLE);
+                        }
+                        return null;
+                    }
+                });
+//        PopWindowsUtils.getmInstance().showfixthingPopupWindow(
+//                context,
+//                toolbar_txt,
+//                R.layout.thingsfix_layout,
+//                0.9f,
+//                "员工订单",
+//                v);
 
     }
 
-    class ThingsFixActivityViewPagerApdapter extends FragmentPagerAdapter {
-        private volatile int num;
-        GoHouseFragment goh;
-        OutHouseFragment outh;
-
-        public ThingsFixActivityViewPagerApdapter(FragmentManager fm, int num) {
-            super(fm);
-            this.num = num;
-        }
-
-        @Override
-        public Fragment getItem(int i) {
-            switch (i) {
-                case 0:
-                    if (goh == null) {
-                        return new GoHouseFragment();
-                    }
-                case 1:
-                    if (outh == null) {
-                        return new OutHouseFragment();
-                    }
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return num;
-        }
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbinder.unbind();
     }
 }

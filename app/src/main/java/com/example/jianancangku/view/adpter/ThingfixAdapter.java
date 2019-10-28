@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.jianancangku.R;
-import com.example.jianancangku.bean.MsgCenterbean;
 import com.example.jianancangku.bean.ThingfixBean;
 
 import java.util.List;

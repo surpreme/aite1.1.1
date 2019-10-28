@@ -2,9 +2,6 @@ package com.example.jianancangku.utils;
 
 import android.content.Context;
 
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.jianancangku.args.Constant;
 import com.example.jianancangku.bean.BaseData;
 import com.example.jianancangku.bean.LogInBean;
@@ -12,8 +9,6 @@ import com.example.jianancangku.bean.MsgCenterbean;
 import com.example.jianancangku.bean.ThingfixBean;
 import com.example.jianancangku.callback.AbsCallback;
 import com.example.jianancangku.callback.ICallback;
-import com.example.jianancangku.ui.activity.MsgCenterActivity;
-import com.example.jianancangku.view.adpter.MsgCenterRecyAdapter;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
@@ -21,15 +16,6 @@ import com.lzy.okgo.request.base.Request;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
-import java.util.concurrent.Executor;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class OkgoUtils<T> {
     private BaseData baseData;

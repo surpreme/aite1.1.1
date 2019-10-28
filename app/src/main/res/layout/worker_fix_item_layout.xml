@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="left"
+        android:paddingLeft="10dp"
         android:text="Synon"
         android:textColor="#ff666666"
         android:textSize="13sp" />
@@ -19,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:gravity="center"
         android:text="011 123456"
         android:textColor="#ff666666"
@@ -40,12 +41,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
         android:text="查看"
         android:textColor="#ff666666"
         android:textSize="13sp">
         <TextView
+            android:id="@+id/fix_txt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -55,6 +57,7 @@
             android:textColor="@color/blue"
             android:textSize="13sp" />
         <TextView
+            android:id="@+id/unUse_txt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

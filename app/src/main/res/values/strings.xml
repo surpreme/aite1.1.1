@@ -2,9 +2,7 @@
     <string name="app_name">aite</string>
 
 
-
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
-
 
 
     <string name="permission_get_accounts_hint">没有此权限，无法开启这个功能，请开启权限 得到手机账户信息</string>
@@ -59,7 +57,6 @@
     <string name="error_field_required">This field is required</string>
 
 
-
     <string name="shopitem_number">包裹号 : %s</string>
     <string name="bigitem_number">大包裹号 : %s</string>
 
@@ -68,8 +65,11 @@
 
     <string name="shopitem_adrress">送货地址 : %s</string>
     <string name="shopitem_man">入库员 : %s</string>
+    <string name="shopitemout_man">出库员 : %s</string>
     <string name="no">取消</string>
     <string name="ok">确定</string>
+    <string name="sendworker">配送员 ：%s</string>
+
     <string name="gohouseworker">入库员</string>
     <string name="outhouseworker">出库员</string>
     <string name="changekeybartxt">修改密码</string>
@@ -79,6 +79,8 @@
     <string name="surekeychange">确认修改</string>
     <string name="leaveworker">离职</string>
     <string name="atworker">在职</string>
+    <string name="thingproblembartitle">包裹异常</string>
+
     <string name="thingcarbartitle">订单打包</string>
     <string name="overthingscar">已打包</string>
     <string name="nothingstxt">待打包</string>
@@ -110,5 +112,9 @@
     <string name="jump">跳过</string>
     <string name="overouthome">已出库</string>
     <string name="overgohome">已入库</string>
+    <string name="unseemsg">屏蔽消息</string>
+    <string name="my">我的</string>
+    <string name="sure_add">确认添加</string>
+    <string name="sure_fix">确认修改</string>
 
 </resources>

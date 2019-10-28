@@ -93,25 +93,4 @@
 
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="20dp">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/oranger"
-            android:text="@string/add"
-            android:textColor="@color/white" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/yelllow"
-            android:text="@string/fixthing"
-            android:textColor="@color/white" />
-    </LinearLayout>
 </LinearLayout>

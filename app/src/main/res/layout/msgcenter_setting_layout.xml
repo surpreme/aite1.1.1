@@ -11,7 +11,7 @@
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/iv_back_msgcenter"
+            android:id="@+id/iv_back_msgcenter_setting"
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
@@ -28,11 +28,13 @@
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.1dp"
         android:background="@color/glay"/>
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:checked="true"
+        android:checked="false"
         style="?switchStyle"
+        android:text="@string/unseemsg"
+        android:paddingLeft="20dp"
         app:thumbTint="@color/blue"
         app:switchMinWidth="60dp"
         android:layout_width="match_parent"
@@ -40,7 +42,7 @@
         android:paddingRight="20dp"/>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.1dp"
         android:background="@color/glay"/>
 
 </LinearLayout>

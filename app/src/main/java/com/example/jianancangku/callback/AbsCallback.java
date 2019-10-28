@@ -5,8 +5,6 @@ import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.utils.OkLogger;
 
-import okhttp3.Request;
-
 public abstract class AbsCallback<T> implements Callback<T> {
 
     @Override

@@ -1,26 +1,38 @@
 package com.example.jianancangku.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.jianancangku.R;
-import com.example.jianancangku.ui.fragment.GoHouseFragment;
-import com.example.jianancangku.ui.fragment.OutHouseFragment;
+import com.example.jianancangku.args.Constant;
+import com.example.jianancangku.bean.BaseData;
+import com.example.jianancangku.bean.Thingbookbean;
+import com.example.jianancangku.callback.AbsCallback;
+import com.example.jianancangku.utils.BeanConvertor;
+import com.example.jianancangku.utils.LogUtils;
+import com.example.jianancangku.utils.ToastUtils;
 import com.example.jianancangku.view.adpter.FragmentAdpter;
+import com.example.jianancangku.view.adpter.ThingbookAdapter;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
+import com.lzy.okgo.request.base.Request;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
 
 public class ThingbookActivity extends BaseActivity {
     @BindView(R.id.thingscar_viewpager)
@@ -33,12 +45,23 @@ public class ThingbookActivity extends BaseActivity {
     ImageView iv_back_thingbook;
 
 
+
+
+    Unbinder unbinder;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.thingscar_layout);
-        ButterKnife.bind((Activity) context);
+        unbinder=ButterKnife.bind((Activity) context);
         init();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     private void init() {
@@ -73,11 +96,14 @@ public class ThingbookActivity extends BaseActivity {
         });
 
     }
-
     @Override
     protected void onStart() {
         super.onStart();
     }
 
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
